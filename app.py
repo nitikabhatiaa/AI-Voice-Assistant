@@ -1,25 +1,41 @@
 from flask import Flask, render_template, request, jsonify
-from flask_cors import CORS  # ✅ Import CORS at the top
+from flask_cors import CORS  
 import pyttsx3
 import datetime
 import webbrowser
 import wikipedia
 import random
 import requests
+import speech_recognition as sr  # ✅ Import Speech Recognition
 
-app = Flask(__name__)  # ✅ Define Flask app first
-CORS(app)  # ✅ Move this below app initialization
+app = Flask(__name__)  
+CORS(app)  
 
 # Initialize the speech engine
 engine = pyttsx3.init()
 engine.setProperty("rate", 150)
 
-# Rest of your code...
-
 def speak(text):
     """Convert text to speech."""
     engine.say(text)
     engine.runAndWait()
+
+def recognize_speech():
+    """Recognize voice input from the user."""
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Listening...")
+        r.adjust_for_ambient_noise(source)  
+        audio = r.listen(source)
+
+    try:
+        text = r.recognize_google(audio)
+        print("You said:", text)
+        return text.lower()
+    except sr.UnknownValueError:
+        return "Sorry, I couldn't understand."
+    except sr.RequestError:
+        return "Speech recognition service is unavailable."
 
 @app.route("/")
 def home():
@@ -62,6 +78,12 @@ def process_command():
     speak(response)
     return jsonify({"response": response})
 
+@app.route("/listen", methods=["GET"])
+def listen():
+    """Process speech input and return recognized text."""
+    command = recognize_speech()
+    return jsonify({"command": command})
+
 def get_weather(city):
     """Fetch weather information for a given city."""
     api_key = "1066332d442715c3c912950d575728d5"  # Replace with your real API key
@@ -77,4 +99,3 @@ def get_weather(city):
 
 if __name__ == "__main__":
     app.run(port=8080, debug=True)
-
