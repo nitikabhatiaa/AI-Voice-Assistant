@@ -98,3 +98,4 @@ yarl==1.18.3
 zipp==3.21.0
 sounddevice==0.4.6
 gunicorn==21.2.0
+espeak
