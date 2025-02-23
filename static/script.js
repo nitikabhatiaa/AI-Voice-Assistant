@@ -4,6 +4,7 @@ const output = document.getElementById("output");
 // Set up Speech Recognition
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognition = new SpeechRecognition();
+recognition.continuous = false;  // Change to `true` if you want continuous listening
 
 recognition.onstart = function() {
     output.textContent = "Listening...";
@@ -14,13 +15,16 @@ recognition.onresult = function(event) {
     output.textContent = "You said: " + transcript;
     
     // Send the transcript to Flask backend on Render
-    fetch("https://ai-voice-assistant-2x3x.onrender.com/process_command", {  // ✅ Updated URL
+    fetch("https://ai-voice-assistant-2x3x.onrender.com/process_command", {  // ✅ Fixed URL
         method: "POST",
-        body: JSON.stringify({ command: transcript }),  // ✅ Updated key to match Flask
-        headers: { "Content-Type": "application/json" }
+        headers: { 
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ command: transcript })  // ✅ Ensure proper formatting
     })
     .then(response => response.json())
     .then(data => {
+        console.log("Server Response:", data);  // ✅ Log response for debugging
         speakResponse(data.response);
     })
     .catch(error => {
