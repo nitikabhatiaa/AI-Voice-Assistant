@@ -43,7 +43,8 @@ def recognize_speech():
 @app.route("/")
 def home():
     """Render the main UI."""
-    return render_template("index.html")
+    from flask import send_file
+    return send_file("index.html")
 
 @app.route("/process_command", methods=["POST"])
 def process_command():
