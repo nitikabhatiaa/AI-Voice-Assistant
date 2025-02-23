@@ -1,24 +1,27 @@
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS  
-import pyttsx3
+from gtts import gTTS
 import datetime
 import webbrowser
 import wikipedia
 import random
 import requests
-import speech_recognition as sr  # ✅ Import Speech Recognition
+import os
+import speech_recognition as sr  
 
 app = Flask(__name__)  
 CORS(app)  
 
-# Initialize the speech engine
-engine = pyttsx3.init()
-engine.setProperty("rate", 150)
-
 def speak(text):
-    """Convert text to speech."""
-    engine.say(text)
-    engine.runAndWait()
+    """Convert text to speech using gTTS"""
+    tts = gTTS(text=text, lang="en")
+    tts.save("response.mp3")
+    
+    # For Render (Linux servers)
+    os.system("mpg321 response.mp3")  
+    
+    # For Windows (if running locally)
+    # os.system("start response.mp3")
 
 def recognize_speech():
     """Recognize voice input from the user."""

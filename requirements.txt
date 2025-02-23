@@ -61,7 +61,6 @@ PyJWT==2.10.1
 pyparsing==3.2.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
-pyttsx3==2.98
 pytz==2025.1
 PyYAML==6.0.2
 referencing==0.36.2
@@ -98,5 +97,4 @@ yarl==1.18.3
 zipp==3.21.0
 sounddevice==0.4.6
 gunicorn==21.2.0
-pyttsx3==2.98
 gtts==2.4.0
