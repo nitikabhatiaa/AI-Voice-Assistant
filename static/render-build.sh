@@ -1,7 +1,7 @@
 #!/bin/bash
-set -e  # Exit immediately if a command exits with a non-zero status
+set -e  # Stop script on first error
 
-# Install espeak
+# Install espeak-ng system package (alternative to espeak)
 apt-get update && apt-get install -y espeak-ng
 
 # Install Python dependencies
