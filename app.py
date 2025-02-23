@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_file
 from flask_cors import CORS  
 from gtts import gTTS
 import datetime
@@ -43,7 +43,6 @@ def recognize_speech():
 @app.route("/")
 def home():
     """Render the main UI."""
-    from flask import send_file
     return send_file("index.html")
 
 @app.route("/process_command", methods=["POST"])
@@ -53,7 +52,9 @@ def process_command():
     
     response = "Sorry, I didn't understand that."
 
-    if "time" in command:
+    if "hi" in command or "hello" in command:
+        response = "Hello! How can I assist you today?"
+    elif "time" in command:
         response = datetime.datetime.now().strftime("The time is %H:%M")
     elif "open youtube" in command:
         webbrowser.open("https://www.youtube.com")
