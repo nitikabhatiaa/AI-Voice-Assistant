@@ -1,30 +1,33 @@
 const button = document.getElementById("start-btn");
 const output = document.getElementById("output");
 
-// Set up Speech Recognition
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognition = new SpeechRecognition();
-recognition.continuous = false;  // Change to `true` if you want continuous listening
 
 recognition.onstart = function() {
-    output.textContent = "Listening...";
+    output.textContent = "Listening... 🎤";
 };
 
 recognition.onresult = function(event) {
     const transcript = event.results[0][0].transcript;
     output.textContent = "You said: " + transcript;
     
-    // Send the transcript to Flask backend on Render
-    fetch("https://ai-voice-assistant-2x3x.onrender.com/process_command", {  // ✅ Fixed URL
+    // Check if "open YouTube" was spoken and open YouTube directly from JavaScript
+    if (transcript.toLowerCase().includes("open youtube")) {
+        output.textContent += "\nOpening YouTube...";
+        window.open("https://www.youtube.com", "_blank");  // ✅ Opens in a new tab
+        return;
+    }
+
+    // Send the command to Flask backend
+    fetch("https://ai-voice-assistant-2x3x.onrender.com/process_command", {
         method: "POST",
-        headers: { 
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ command: transcript })  // ✅ Ensure proper formatting
+        body: JSON.stringify({ command: transcript }),
+        headers: { "Content-Type": "application/json" }
     })
     .then(response => response.json())
     .then(data => {
-        console.log("Server Response:", data);  // ✅ Log response for debugging
+        output.textContent += "\nAI: " + data.response;
         speakResponse(data.response);
     })
     .catch(error => {
@@ -33,12 +36,11 @@ recognition.onresult = function(event) {
     });
 };
 
-// Start recognition on button click
 button.addEventListener("click", () => {
     recognition.start();
 });
 
-// Function to convert text response to speech
+// Convert assistant's response into speech
 function speakResponse(message) {
     const speech = new SpeechSynthesisUtterance();
     speech.text = message;
