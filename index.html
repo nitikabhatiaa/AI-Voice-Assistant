@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Voice Assistant!</title>
-    <link rel="stylesheet" href="static/styles.css">
+    <title>AI Voice Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container">
         <h1>AI Voice Assistant</h1>
         <p>Click the button and start speaking!</p>
         <button id="start-btn">🎤 Start Listening</button>
-        <p id="output"></p>
+        <p id="user-output"></p> <!-- User's spoken text -->
+        <h3>Assistant Says:</h3>
+        <p id="assistant-output"></p> <!-- Assistant's spoken text -->
     </div>
-    <script src="static/script.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
