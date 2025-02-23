@@ -17,7 +17,7 @@ def speak(text):
     tts = gTTS(text=text, lang="en")
     tts.save("response.mp3")
     
-    # For Render (Linux servers)
+    # For Linux servers (like Render)
     os.system("mpg321 response.mp3")  
     
     # For Windows (if running locally)
@@ -47,6 +47,7 @@ def home():
 
 @app.route("/process_command", methods=["POST"])
 def process_command():
+    """Process user voice commands."""
     data = request.get_json() 
     command = data.get("command", "").lower()
     
@@ -56,9 +57,12 @@ def process_command():
         response = "Hello! How can I assist you today?"
     elif "time" in command:
         response = datetime.datetime.now().strftime("The time is %H:%M")
-    elif "open youtube" in command:
-        webbrowser.open("https://www.youtube.com")
-        response = "Opening YouTube"
+    elif "open youtube" in command or "youtube" in command:
+        response = "Opening YouTube..."
+        try:
+            webbrowser.open("https://www.youtube.com", new=2)  # Opens in a new tab
+        except:
+            response = "Click this link to open YouTube: https://www.youtube.com"
     elif "search wikipedia for" in command:
         query = command.replace("search wikipedia for", "").strip()
         try:
